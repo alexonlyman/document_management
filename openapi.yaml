@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  description: API for user registration and login
+  title: User API
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/
+security:
+- bearerAuth: []
+paths:
+  /user/registration:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: User registered successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Bad request (e.g., email already exists)
+      summary: Register a new user
+      tags:
+      - Register page
+      x-contentType: application/json
+      x-accepts: application/json
+  /user/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: User logged in successfully
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Unauthorized (invalid credentials)
+      summary: Login a user
+      tags:
+      - Login page
+      x-contentType: application/json
+      x-accepts: application/json
+  /doc_panel/createDoc:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+        required: true
+      responses:
+        "200":
+          description: Document created successfully
+        "400":
+          description: Bad request
+      summary: Create a new document
+      tags:
+      - Creating doc page
+      x-contentType: application/json
+      x-accepts: application/json
+  /doc_panel/editDoc/{id}:
+    put:
+      parameters:
+      - description: ID of the document to edit
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          minimum: 1
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: Document edited successfully
+        "400":
+          description: Bad request
+      summary: Edit an existing document
+      tags:
+      - Edit document page
+      x-contentType: text/plain
+      x-accepts: application/json
+  /doc_panel/getDocs:
+    get:
+      responses:
+        "200":
+          description: List of documents retrieved successfully
+        "400":
+          description: Bad request
+      summary: Get list of documents
+      tags:
+      - Get all documents
+      x-accepts: application/json
+components:
+  schemas:
+    Document:
+      example:
+        description: description
+        content: content
+      properties:
+        content:
+          description: content of document
+          type: string
+        description:
+          description: Document description (optional)
+          type: string
+      required:
+      - content
+      - description
+      type: object
+    Register:
+      example:
+        password: password
+        role: USER
+        email: email
+      properties:
+        email:
+          description: User's email address
+          type: string
+        password:
+          description: User's password
+          type: string
+        role:
+          description: User's role (e.g., USER, ADMIN)
+          enum:
+          - USER
+          - ADMIN
+          type: string
+      required:
+      - email
+      - password
+      - role
+      type: object
+    Login:
+      example:
+        password: password
+        email: email
+      properties:
+        email:
+          description: User's email address
+          type: string
+        password:
+          description: User's password
+          type: string
+      required:
+      - email
+      - password
+      type: object
+    inline_response_200:
+      example:
+        token: token
+      properties:
+        token:
+          description: JWT token for authentication
+          type: string
+      type: object
+    inline_response_400:
+      properties:
+        message:
+          description: Error message
+          type: string
+      type: object
+
