@@ -6,9 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import home_group.doc_service.dto.DocumentInfo;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 @RequiredArgsConstructor
+@Configuration
 public class DeserializeDoc implements Deserializer<DocumentInfo> {
    private final ObjectMapper mapper;
 
